@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Logement{% endblock %}
+
+{% block body %}
+
+    <h2 class="text-center m-4">Create New Logement</h2>
+    {{ include('logement/_form.html.twig') }}
+    <a href="{{ path('app_logement_index') }}" class="btn btn-primary">back to list</a>
+{% endblock %}

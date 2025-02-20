@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Logement{% endblock %}
+
+{% block body %}
+    <div class="container">
+    <br>
+        <div class="d-flex justify-content-center">
+            <div class="card" style="width: 40%; border: 1px solid #e0e0e0; background-color: transparent;">
+                {% if logement.image starts with 'http' %}
+                    <img src="{{ logement.image }}" class="card-img-top" alt="{{ logement.titre }}" style="width: 100%; height: 300px; object-fit: cover; transition: transform 0.3s ease;">
+                {% else %}
+                    <img src="{{ asset('uploads/images/' ~ logement.image) }}" class="card-img-top" alt="{{ logement.titre }}" style="width: 100%; height: 300px; object-fit: cover; transition: transform 0.3s ease;">
+                {% endif %}
+                <div class="card-body text-center">
+                    <h5 class="card-title px-3">{{ logement.titre }}</h5>
+                    <p class="card-text px-3">{{ logement.description }}</p>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><strong>Localisation:</strong> {{ logement.localisation }}</li>
+                        <li class="list-group-item text-success" style="font-size: 1.4em;">
+                            <strong>Prix:</strong> {{ logement.prix }} €
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-4 text-center">
+            <a href="{{ path('app_logement_index') }}" class="btn btn-primary">Back to list</a>
+          
+                <a href="{{ path('app_logement_edit', {'id': logement.id}) }}" class="btn btn-warning">Edit</a>
+                {{ include('logement/_delete_form.html.twig') }}
+            
+        </div>
+    </div>
+
+    <style>
+        .card-img-top:hover {
+            transform: scale(1.05);
+            cursor: pointer;
+        }
+    </style>
+{% endblock %}

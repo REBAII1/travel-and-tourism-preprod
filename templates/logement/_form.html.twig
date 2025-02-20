@@ -1,0 +1,79 @@
+{{ form_start(form, {'attr': {'id': 'logementForm', 'novalidate': 'novalidate'}}) }}
+
+<div class="container d-flex justify-content-center align-items-center vh-80 mt-4">
+    <div class="card shadow p-4 m-3" style="width: 40rem;">
+
+        <div class="mb-3">
+            {{ form_label(form.titre, 'Title', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+            {{ form_widget(form.titre, {'attr': {'class': 'form-control'}}) }}
+            <p class="text-danger d-none" id="error-titre">Title is required (3-100 characters).</p>
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+            {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+            <p class="text-danger d-none" id="error-description">Description is required (10-500 characters).</p>
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.localisation, 'Location', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+            {{ form_widget(form.localisation, {'attr': {'class': 'form-control'}}) }}
+            <p class="text-danger d-none" id="error-localisation">Location is required (3-100 characters).</p>
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.prix, 'Price', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+            {{ form_widget(form.prix, {'attr': {'class': 'form-control'}}) }}
+            <p class="text-danger d-none" id="error-prix">Price is required, must be a valid number, and cannot be negative.</p>
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.photo, 'Image', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+            {{ form_widget(form.photo, {'attr': {'class': 'form-control'}}) }}
+            <p class="text-danger d-none" id="error-photo">Please select an image (JPG, JPEG, PNG, GIF).</p>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">{{ button_label|default('Create') }}</button>
+    </div>
+</div>
+
+{{ form_end(form) }}
+
+<script>
+document.getElementById("logementForm").addEventListener("submit", function(event) {
+    let isValid = true;
+
+    let titre = document.getElementById("{{ form.titre.vars.id }}");
+    let description = document.getElementById("{{ form.description.vars.id }}");
+    let localisation = document.getElementById("{{ form.localisation.vars.id }}");
+    let prix = document.getElementById("{{ form.prix.vars.id }}");
+    let photo = document.getElementById("{{ form.photo.vars.id }}");
+
+    function validateField(field, errorId, condition) {
+        let errorElement = document.getElementById(errorId);
+        if (condition) {
+            errorElement.classList.remove("d-none");
+            field.classList.add("is-invalid");
+            isValid = false;
+        } else {
+            errorElement.classList.add("d-none");
+            field.classList.remove("is-invalid");
+        }
+    }
+
+    validateField(titre, "error-titre", titre.value.trim() === "" || titre.value.length < 3 || titre.value.length > 100);
+    validateField(description, "error-description", description.value.trim() === "" || description.value.length < 10 || description.value.length > 500);
+    validateField(localisation, "error-localisation", localisation.value.trim() === "" || localisation.value.length < 3 || localisation.value.length > 100);
+    
+    let prixValue = parseFloat(prix.value);
+    validateField(prix, "error-prix", prix.value.trim() === "" || isNaN(prixValue) || prixValue < 0);
+
+    let validImageTypes = ["image/jpeg", "image/png", "image/gif"];
+    let file = photo.files[0];
+    validateField(photo, "error-photo", !file || !validImageTypes.includes(file.type));
+
+    if (!isValid) {
+        event.preventDefault();
+    }
+});
+</script>
