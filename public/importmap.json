@@ -1,0 +1,18 @@
+{
+    "imports": {
+      "bootstrap": "{{ asset('js/bootstrap.bundle.min.js') }}",
+      "jquery": "{{ asset('js/jquery-3.3.1.min.js') }}",
+      "jquery-migrate": "{{ asset('js/jquery-migrate-3.0.1.min.js') }}",
+      "jquery-ui": "{{ asset('js/jquery-ui.js') }}",
+      "popper": "{{ asset('js/popper.min.js') }}",
+      "owl-carousel": "{{ asset('js/owl.carousel.min.js') }}",
+      "mediaelement": "{{ asset('js/mediaelement-and-player.min.js') }}",
+      "stellar": "{{ asset('js/jquery.stellar.min.js') }}",
+      "countdown": "{{ asset('js/jquery.countdown.min.js') }}",
+      "magnific-popup": "{{ asset('js/jquery.magnific-popup.min.js') }}",
+      "datepicker": "{{ asset('js/bootstrap-datepicker.min.js') }}",
+      "aos": "{{ asset('js/aos.js') }}",
+      "main": "{{ asset('js/main.js') }}"
+    }
+  }
+  

@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Bundle\SecurityBundle\Security;
 
 #[Route('/logement')]
 final class LogementController extends AbstractController
@@ -25,37 +26,39 @@ final class LogementController extends AbstractController
     }
 
     #[Route('/new', name: 'app_logement_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, #[Autowire('%photo_dir%')] string $photoDir): Response
-{
-    $logement = new Logement();
-    $form = $this->createForm(LogementType::class, $logement);
-    $form->handleRequest($request);
-
-    if ($form->isSubmitted() && $form->isValid()) {
-        if ($photo = $form['photo']->getData()) {
-            $fileName = uniqid().'.'.$photo->guessExtension();
-            $photo->move($photoDir, $fileName);
-            $logement->setImage($fileName);
+    #[IsGranted('ROLE_USER')] 
+    public function new(Request $request, EntityManagerInterface $entityManager, Security $security, #[Autowire('%photo_dir%')] string $photoDir): Response
+    {
+        $logement = new Logement();
+        $form = $this->createForm(LogementType::class, $logement);
+        $form->handleRequest($request);
+    
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ($photo = $form['photo']->getData()) {
+                $fileName = uniqid().'.'.$photo->guessExtension();
+                $photo->move($photoDir, $fileName);
+                $logement->setImage($fileName);
+            }
+    
+            // Récupérer l'utilisateur authentifié
+            $user = $security->getUser();
+            if (!$user) {
+                throw $this->createAccessDeniedException('Vous devez être connecté pour ajouter un logement.');
+            }
+    
+            $logement->setOwner($user);
+            $entityManager->persist($logement);
+            $entityManager->flush();
+    
+            return $this->redirectToRoute('app_logement_index', [], Response::HTTP_SEE_OTHER);
         }
-
-        $user = $entityManager->getRepository(User::class)->find(1);
-        if (!$user) {
-            throw $this->createNotFoundException('User with ID 1 not found.');
-        }
-
-        $logement->setOwner($user);
-        $entityManager->persist($logement);
-        $entityManager->flush();
-
-        return $this->redirectToRoute('app_logement_index', [], Response::HTTP_SEE_OTHER);
+    
+        return $this->render('logement/new.html.twig', [
+            'logement' => $logement,
+            'form' => $form,
+        ]);
     }
-
-    return $this->render('logement/new.html.twig', [
-        'logement' => $logement,
-        'form' => $form,
-    ]);
-}
-
+    
 
     #[Route('/{id}', name: 'app_logement_show', methods: ['GET'])]
     public function show(Logement $logement): Response
