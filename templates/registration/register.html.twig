@@ -3,50 +3,62 @@
 {% block title %}Register{% endblock %}
 
 {% block body %}
-<div class="container d-flex justify-content-center align-items-center vh-100">
-    <div class="card p-4" style="width: 100%; max-width: 400px;">
-        <div class="card-body p-2">
-            <form method="post">
-                {{ form_start(form) }}
-                
-                <h1 class="h3 mb-3 font-weight-normal text-center">Register</h1>
+	<style>
+		.role-checkbox label {
+			margin-left: 10px;
+			margin-right: 10px;
+		}
+	</style>
+	<div class="container d-flex justify-content-center align-items-center vh-100">
+		<div class="card p-4" style="width: 100%; max-width: 400px;">
+			<div class="card-body p-2">
+				<form method="post">
+					{{ form_start(form) }}
 
-                <!-- Display errors for each form field -->
-                <div class="form-group p-2">
-                    {{ form_row(form.email, { 'attr': { 'class': 'form-control p-2', 'autocomplete': 'email', 'required': 'true' } }) }}
-                </div>
+					<h1 class="h3 mb-3 font-weight-normal text-center">Register</h1>
 
-                <div class="form-group p-2">
-                    {{ form_row(form.plainPassword, { 'attr': { 'class': 'form-control p-2', 'autocomplete': 'new-password', 'required': 'true' } }) }}
-                </div>
+					<!-- Display errors for each form field -->
+					<div class="form-group p-2">
+						{{ form_row(form.email, { 'attr': { 'class': 'form-control p-2', 'autocomplete': 'email', 'required': 'true' } }) }}
+					</div>
 
-                <div class="form-group p-2">
-                    {{ form_row(form.agreeTerms, { 'attr': { 'class': 'form-check-input' } }) }}
-                    <label class="form-check-label" for="agreeTerms">
-                        I agree to the terms and conditions
-                    </label>
-                </div>
+					<div class="form-group p-2">
+						{{ form_row(form.plainPassword, { 'attr': { 'class': 'form-control p-2', 'autocomplete': 'new-password', 'required': 'true' } }) }}
+					</div>
 
-                <!-- Display global form errors -->
-                <div>
-                    {{ form_errors(form) }}
-                </div>
+					<div class="form-group p-2">
+						{{ form_row(form.agreeTerms, { 'attr': { 'class': 'role-checkbox' } }) }}
+						<strong>
+							<label class="form-check-label" for="agreeTerms">
+								I agree to the terms and conditions
+							</label>
+						</strong>
+					</div>
 
-                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+					<!-- Roles Checkbox (Above Register Button) -->
+					<div class="form-group p-2">
+						{{ form_row(form.roles, { 'attr': { 'class': 'role-checkbox' } }) }}
+					</div>
 
-                <div class="d-flex justify-content-center mb-3">
-                    <button class="btn" type="submit" style="background-color:#669c19;color:white;padding:12px;font-size:20px">
-                        Register
-                    </button>
-                </div>
+					<div>
+						{{ form_errors(form) }}
+					</div>
 
-                <div class="text-center">
-                    <a href="{{ path('app_login') }}" style="color:grey">Already have an account? Login</a>
-                </div>
+					<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
-                {{ form_end(form) }}
-            </form>
-        </div>
-    </div>
-</div>
+					<div class="d-flex justify-content-center mb-3">
+						<button class="btn" type="submit" style="background-color:#669c19;color:white;padding:12px;font-size:20px">
+							Register
+						</button>
+					</div>
+
+					<div class="text-center">
+						<a href="{{ path('app_login') }}" style="color:grey">Already have an account? Login</a>
+					</div>
+
+					{{ form_end(form) }}
+				</form>
+			</div>
+		</div>
+	</div>
 {% endblock %}
