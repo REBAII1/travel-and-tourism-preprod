@@ -3,17 +3,50 @@
 {% block title %}Register{% endblock %}
 
 {% block body %}
-    <h1>Register</h1>
+<div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="card p-4" style="width: 100%; max-width: 400px;">
+        <div class="card-body p-2">
+            <form method="post">
+                {{ form_start(form) }}
+                
+                <h1 class="h3 mb-3 font-weight-normal text-center">Register</h1>
 
-    {{ form_errors(registrationForm) }}
+                <!-- Display errors for each form field -->
+                <div class="form-group p-2">
+                    {{ form_row(form.email, { 'attr': { 'class': 'form-control p-2', 'autocomplete': 'email', 'required': 'true' } }) }}
+                </div>
 
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.email) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
-        {{ form_row(registrationForm.agreeTerms) }}
+                <div class="form-group p-2">
+                    {{ form_row(form.plainPassword, { 'attr': { 'class': 'form-control p-2', 'autocomplete': 'new-password', 'required': 'true' } }) }}
+                </div>
 
-        <button type="submit" class="btn">Register</button>
-    {{ form_end(registrationForm) }}
+                <div class="form-group p-2">
+                    {{ form_row(form.agreeTerms, { 'attr': { 'class': 'form-check-input' } }) }}
+                    <label class="form-check-label" for="agreeTerms">
+                        I agree to the terms and conditions
+                    </label>
+                </div>
+
+                <!-- Display global form errors -->
+                <div>
+                    {{ form_errors(form) }}
+                </div>
+
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                <div class="d-flex justify-content-center mb-3">
+                    <button class="btn" type="submit" style="background-color:#669c19;color:white;padding:12px;font-size:20px">
+                        Register
+                    </button>
+                </div>
+
+                <div class="text-center">
+                    <a href="{{ path('app_login') }}" style="color:grey">Already have an account? Login</a>
+                </div>
+
+                {{ form_end(form) }}
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}
