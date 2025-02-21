@@ -14,31 +14,33 @@
 		<br></br>
 	<div class="row">
 		{% for logement in logements %}
-			<div class="col-md-4 mb-4 ">
-				<div class="card" style="border: 1px solid #e0e0e0; background-color: transparent;">
-					<a href="{{ path('app_logement_show', {'id': logement.id}) }}">
-						{% if logement.image starts with 'http' %}
-							<img src="{{ logement.image }}" class="card-img-top" alt="{{ logement.titre }}" style="transition: transform 0.3s ease;">
-						{% else %}
-							<img src="{{ asset('uploads/images/' ~ logement.image) }}" class="card-img-top" alt="{{ logement.titre }}" style="transition: transform 0.3s ease;">
-						{% endif %}
-					</a>
-					<div class="card-body">
-						<h5 class="card-title px-3">{{ logement.titre }}</h5>
-						<p class="card-text px-3">{{ logement.description }}</p>
-						<ul class="list-group list-group-flush">
-							<li class="list-group-item">
-								<strong>Localisation:</strong>
-								{{ logement.localisation }}</li>
-							<li class="list-group-item text-success" style=" font-size: 1.4em;">
-								<strong>Prix:</strong>
-								{{ logement.prix }}
-								€
-							</li>
-						</ul>
+			{% if logement.owner.id == app.user.id %}
+				<div class="col-md-4 mb-4 ">
+					<div class="card" style="border: 1px solid #e0e0e0; background-color: transparent;">
+						<a href="{{ path('app_logement_show', {'id': logement.id}) }}">
+							{% if logement.image starts with 'http' %}
+								<img src="{{ logement.image }}" class="card-img-top" alt="{{ logement.titre }}" style="transition: transform 0.3s ease;">
+							{% else %}
+								<img src="{{ asset('uploads/images/' ~ logement.image) }}" class="card-img-top" alt="{{ logement.titre }}" style="transition: transform 0.3s ease;">
+							{% endif %}
+						</a>
+						<div class="card-body">
+							<h5 class="card-title px-3">{{ logement.titre }}</h5>
+							<p class="card-text px-3">{{ logement.description }}</p>
+							<ul class="list-group list-group-flush">
+								<li class="list-group-item">
+									<strong>Localisation:</strong>
+									{{ logement.localisation }}</li>
+								<li class="list-group-item text-success" style=" font-size: 1.4em;">
+									<strong>Prix:</strong>
+									{{ logement.prix }}
+									€
+								</li>
+							</ul>
+						</div>
 					</div>
 				</div>
-			</div>
+			{% endif %}
 		{% else %}
 			<div class="col-12">
 				<div class="alert alert-info" role="alert">
