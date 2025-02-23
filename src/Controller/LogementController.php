@@ -20,8 +20,10 @@ final class LogementController extends AbstractController
     #[Route(name: 'app_logement_index', methods: ['GET'])]
     public function index(LogementRepository $logementRepository): Response
     {
+        $logements = $logementRepository->findAllWithOwners();
+        $logements = array_filter($logements, fn($l) => $l->getOwner() !== null);
         return $this->render('logement/index.html.twig', [
-            'logements' => $logementRepository->findAll(),
+            'logements' => $logements,
         ]);
     }
 

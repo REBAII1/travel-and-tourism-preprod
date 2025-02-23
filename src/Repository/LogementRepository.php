@@ -16,6 +16,16 @@ class LogementRepository extends ServiceEntityRepository
         parent::__construct($registry, Logement::class);
     }
 
+    public function findAllWithOwners(): array
+    {
+        return $this->createQueryBuilder('l')
+        ->leftJoin('l.owner', 'o')
+        ->addSelect('o')
+        ->getQuery()
+        ->getResult();
+    }
+
+
     //    /**
     //     * @return Logement[] Returns an array of Logement objects
     //     */

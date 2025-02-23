@@ -14,7 +14,7 @@
 		<br></br>
 	<div class="row">
 		{% for logement in logements %}
-			{% if logement.owner.id == app.user.id %}
+			{% if logement.owner and logement.owner.id == app.user.id %}
 				<div class="col-md-4 mb-4 ">
 					<div class="card" style="border: 1px solid #e0e0e0; background-color: transparent;">
 						<a href="{{ path('app_logement_show', {'id': logement.id}) }}">
