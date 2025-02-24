@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\User;
 use App\Entity\Logement;
+use App\Entity\Reservation;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -19,36 +20,77 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        // Create 10 users with different roles
-        $roles = ['ROLE_TRAVELER', 'ROLE_ADMIN', 'ROLE_HOST'];
-        $hosts = [];
+        // Create Users
+        $admin = new User();
+        $admin->setEmail("admin@mail.com")
+            ->setPassword($this->passwordHasher->hashPassword($admin, 'adminpass'))
+            ->setRoles(["ROLE_ADMIN"]);
+        $manager->persist($admin);
 
-        for ($i = 1; $i <= 10; $i++) {
-            $user = new User();
-            $user->setEmail("user$i@example.com");
-            $user->setPassword($this->passwordHasher->hashPassword($user, 'password123'));
-            $user->setRoles([$roles[$i % 3]]);
+        $host = new User();
+        $host->setEmail("alice.host@mail.com")
+            ->setPassword($this->passwordHasher->hashPassword($host, 'hostpass'))
+            ->setRoles(["ROLE_HOST"]);
+        $manager->persist($host);
 
-            $manager->persist($user);
+        $traveler = new User();
+        $traveler->setEmail("john.traveler@mail.com")
+            ->setPassword($this->passwordHasher->hashPassword($traveler, 'travelerpass'))
+            ->setRoles(["ROLE_TRAVELER"]);
+        $manager->persist($traveler);
 
-             // Store users with ROLE_HOST to assign logements
-            if ($roles[$i % 3] === 'ROLE_HOST') {
-                $hosts[] = $user;
-            }
-        }
+        // Create Logements
+        $logement1 = new Logement();
+        $logement1->setTitre("Cozy Apartment")
+            ->setDescription("A modern apartment near the beach.")
+            ->setLocalisation("Nice, France")
+            ->setPrix(120)
+            ->setImage("apartment.jpg")
+            ->setOwner($host);
+        $manager->persist($logement1);
 
-        // Create 10 logements and assign them to random hosts
-        for ($i = 0; $i < 10; $i++) {
-            $logement = new Logement();
-            $logement->setTitre("Logement $i")
-                ->setDescription("Description for Logement $i")
-                ->setLocalisation("City $i")
-                ->setPrix(mt_rand(50, 500))
-                ->setImage("image$i.jpg")
-                ->setOwner($hosts[array_rand($hosts)]);
+        $logement2 = new Logement();
+        $logement2->setTitre("Mountain Cabin")
+            ->setDescription("A quiet retreat in the Alps.")
+            ->setLocalisation("Chamonix, France")
+            ->setPrix(200)
+            ->setImage("cabin.jpg")
+            ->setOwner($host);
+        $manager->persist($logement2);
 
-            $manager->persist($logement);
-        }
+        $logement3 = new Logement();
+        $logement3->setTitre("City Loft")
+            ->setDescription("A stylish loft in the heart of Paris.")
+            ->setLocalisation("Paris, France")
+            ->setPrix(180)
+            ->setImage("loft.jpg")
+            ->setOwner($host);
+        $manager->persist($logement3);
+
+        // Create Reservations
+        $reservation1 = new Reservation();
+        $reservation1->setStatus(true)
+            ->setDateDebut(new \DateTime("2025-06-01"))
+            ->setDateFin(new \DateTime("2025-06-07"))
+            ->setLogement($logement1)
+            ->setUser($traveler);
+        $manager->persist($reservation1);
+
+        $reservation2 = new Reservation();
+        $reservation2->setStatus(false)
+            ->setDateDebut(new \DateTime("2025-07-10"))
+            ->setDateFin(new \DateTime("2025-07-15"))
+            ->setLogement($logement2)
+            ->setUser($traveler);
+        $manager->persist($reservation2);
+
+        $reservation3 = new Reservation();
+        $reservation3->setStatus(true)
+            ->setDateDebut(new \DateTime("2025-08-05"))
+            ->setDateFin(new \DateTime("2025-08-12"))
+            ->setLogement($logement3)
+            ->setUser($traveler);
+        $manager->persist($reservation3);
 
         $manager->flush();
     }
